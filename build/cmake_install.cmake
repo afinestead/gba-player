@@ -2,7 +2,7 @@
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/Users/alex/code/gba/gba-player")
+  set(CMAKE_INSTALL_PREFIX "/Users/alex/code/gba/gba-player/build")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -39,15 +39,15 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/alex/code/gba/gba-player/build/libs/cmake_install.cmake")
+  include("/Users/alex/code/gba/gba-player/build/lib/cmake_install.cmake")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/." TYPE EXECUTABLE FILES "/Users/alex/code/gba/gba-player/build/player.elf")
-  if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/./player.elf" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/./player.elf")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/." TYPE EXECUTABLE FILES "/Users/alex/code/gba/gba-player/build/gba-player.elf")
+  if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/./gba-player.elf" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/./gba-player.elf")
     if(CMAKE_INSTALL_DO_STRIP)
-      execute_process(COMMAND "/Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/bin/arm-none-eabi-strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/./player.elf")
+      execute_process(COMMAND "/Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/bin/arm-none-eabi-strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/./gba-player.elf")
     endif()
   endif()
 endif()
@@ -55,14 +55,14 @@ endif()
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   
         execute_process(
-            COMMAND "/Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/bin/arm-none-eabi-objcopy" -O binary "player.elf" "player.bin"
-            COMMAND "/usr/local/Cellar/cmake/3.21.1/bin/cmake" -P "/Users/alex/code/gba/gba-toolchain/cmake/Modules/GbaFix.cmake" -- "player.bin"
-                "player.gba"
-                TITLE "My Game"
+            COMMAND "/Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/bin/arm-none-eabi-objcopy" -O binary "gba-player.elf" "gba-player.bin"
+            COMMAND "/usr/local/Cellar/cmake/3.21.1/bin/cmake" -P "/Users/alex/code/gba/gba-toolchain/cmake/Modules/GbaFix.cmake" -- "gba-player.bin"
+                "gba-player.gba"
+                TITLE "GBA Player"
                 ID "AABE"
-                MAKER "CD"
+                MAKER "AF"
                 VERSION "1"
-            WORKING_DIRECTORY "/Users/alex/code/gba/gba-player/."
+            WORKING_DIRECTORY "/Users/alex/code/gba/gba-player/build/."
         )
     
 endif()

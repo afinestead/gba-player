@@ -11,8 +11,8 @@ set(CMAKE_MAKEFILE_DEPENDS
   "CMakeFiles/3.21.1/CMakeASMCompiler.cmake"
   "CMakeFiles/3.21.1/CMakeCCompiler.cmake"
   "CMakeFiles/3.21.1/CMakeSystem.cmake"
-  "../libs/CMakeLists.txt"
-  "../libs/libseven/CMakeLists.txt"
+  "../lib/CMakeLists.txt"
+  "../lib/libseven/CMakeLists.txt"
   "/Users/alex/code/gba/gba-toolchain/cmake/Modules/Bin2s.cmake"
   "/Users/alex/code/gba/gba-toolchain/cmake/Modules/Bincat.cmake"
   "/Users/alex/code/gba/gba-toolchain/cmake/Modules/Findagbabi.cmake"
@@ -50,16 +50,17 @@ set(CMAKE_MAKEFILE_OUTPUTS
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
   "CMakeFiles/CMakeDirectoryInformation.cmake"
+  "lib/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "lib/libseven/CMakeFiles/CMakeDirectoryInformation.cmake"
   "lib/rom/CMakeFiles/CMakeDirectoryInformation.cmake"
   "lib/agbabi/CMakeFiles/CMakeDirectoryInformation.cmake"
-  "libs/CMakeFiles/CMakeDirectoryInformation.cmake"
-  "libs/libseven/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/player.dir/DependInfo.cmake"
+  "CMakeFiles/rom.dir/DependInfo.cmake"
+  "CMakeFiles/gba-player.dir/DependInfo.cmake"
+  "lib/libseven/CMakeFiles/seven.dir/DependInfo.cmake"
   "lib/rom/CMakeFiles/librom.dir/DependInfo.cmake"
   "lib/agbabi/CMakeFiles/agbabi.dir/DependInfo.cmake"
-  "libs/libseven/CMakeFiles/seven.dir/DependInfo.cmake"
   )

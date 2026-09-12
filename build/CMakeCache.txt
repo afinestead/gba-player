@@ -102,8 +102,8 @@ CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 //Enable/Disable output of compile commands during generation.
 CMAKE_EXPORT_COMPILE_COMMANDS:BOOL=
 
-//Installation prefix path for the project install step
-CMAKE_INSTALL_PREFIX:PATH=/Users/alex/code/gba/gba-player
+//Install path prefix, prepended onto install directories.
+CMAKE_INSTALL_PREFIX:PATH=/Users/alex/code/gba/gba-player/build
 
 //Path to a program.
 CMAKE_LINKER:FILEPATH=/Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/bin/arm-none-eabi-ld
@@ -147,7 +147,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=gba_player
+CMAKE_PROJECT_NAME:STATIC=gba_gba-player
 
 //Value Computed by CMake
 CMAKE_PROJECT_VERSION:STATIC=2.1.6
@@ -264,6 +264,15 @@ agbabi_IS_TOP_LEVEL:STATIC=OFF
 agbabi_SOURCE_DIR:STATIC=/Users/alex/code/gba/gba-toolchain/lib/agbabi
 
 //Value Computed by CMake
+gba_gba-player_BINARY_DIR:STATIC=/Users/alex/code/gba/gba-player/build
+
+//Value Computed by CMake
+gba_gba-player_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+gba_gba-player_SOURCE_DIR:STATIC=/Users/alex/code/gba/gba-player
+
+//Value Computed by CMake
 gba_player_BINARY_DIR:STATIC=/Users/alex/code/gba/gba-player/build
 
 //Value Computed by CMake
@@ -276,13 +285,13 @@ gba_player_SOURCE_DIR:STATIC=/Users/alex/code/gba/gba-player
 libagbabi:FILEPATH=libagbabi-NOTFOUND
 
 //Value Computed by CMake
-libseven_BINARY_DIR:STATIC=/Users/alex/code/gba/gba-player/build/libs/libseven
+libseven_BINARY_DIR:STATIC=/Users/alex/code/gba/gba-player/build/lib/libseven
 
 //Value Computed by CMake
 libseven_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
-libseven_SOURCE_DIR:STATIC=/Users/alex/code/gba/gba-player/libs/libseven
+libseven_SOURCE_DIR:STATIC=/Users/alex/code/gba/gba-player/lib/libseven
 
 //Value Computed by CMake
 my_project_BINARY_DIR:STATIC=/Users/alex/code/gba/gba-player/build

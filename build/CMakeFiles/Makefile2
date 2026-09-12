@@ -63,20 +63,37 @@ CMAKE_BINARY_DIR = /Users/alex/code/gba/gba-player/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/player.dir/all
-all: libs/all
+all: CMakeFiles/rom.dir/all
+all: CMakeFiles/gba-player.dir/all
+all: lib/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
-preinstall: libs/preinstall
+preinstall: lib/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/player.dir/clean
+clean: CMakeFiles/rom.dir/clean
+clean: CMakeFiles/gba-player.dir/clean
+clean: lib/clean
 clean: lib/rom/clean
 clean: lib/agbabi/clean
-clean: libs/clean
 .PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory lib
+
+# Recursive "all" directory target.
+lib/all: lib/libseven/all
+.PHONY : lib/all
+
+# Recursive "preinstall" directory target.
+lib/preinstall: lib/libseven/preinstall
+.PHONY : lib/preinstall
+
+# Recursive "clean" directory target.
+lib/clean: lib/libseven/clean
+.PHONY : lib/clean
 
 #=============================================================================
 # Directory level rules for directory lib/agbabi
@@ -94,6 +111,21 @@ lib/agbabi/clean: lib/agbabi/CMakeFiles/agbabi.dir/clean
 .PHONY : lib/agbabi/clean
 
 #=============================================================================
+# Directory level rules for directory lib/libseven
+
+# Recursive "all" directory target.
+lib/libseven/all: lib/libseven/CMakeFiles/seven.dir/all
+.PHONY : lib/libseven/all
+
+# Recursive "preinstall" directory target.
+lib/libseven/preinstall:
+.PHONY : lib/libseven/preinstall
+
+# Recursive "clean" directory target.
+lib/libseven/clean: lib/libseven/CMakeFiles/seven.dir/clean
+.PHONY : lib/libseven/clean
+
+#=============================================================================
 # Directory level rules for directory lib/rom
 
 # Recursive "all" directory target.
@@ -109,62 +141,84 @@ lib/rom/clean: lib/rom/CMakeFiles/librom.dir/clean
 .PHONY : lib/rom/clean
 
 #=============================================================================
-# Directory level rules for directory libs
-
-# Recursive "all" directory target.
-libs/all: libs/libseven/all
-.PHONY : libs/all
-
-# Recursive "preinstall" directory target.
-libs/preinstall: libs/libseven/preinstall
-.PHONY : libs/preinstall
-
-# Recursive "clean" directory target.
-libs/clean: libs/libseven/clean
-.PHONY : libs/clean
-
-#=============================================================================
-# Directory level rules for directory libs/libseven
-
-# Recursive "all" directory target.
-libs/libseven/all: libs/libseven/CMakeFiles/seven.dir/all
-.PHONY : libs/libseven/all
-
-# Recursive "preinstall" directory target.
-libs/libseven/preinstall:
-.PHONY : libs/libseven/preinstall
-
-# Recursive "clean" directory target.
-libs/libseven/clean: libs/libseven/CMakeFiles/seven.dir/clean
-.PHONY : libs/libseven/clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/player.dir
+# Target rules for target CMakeFiles/rom.dir
 
 # All Build rule for target.
-CMakeFiles/player.dir/all: lib/rom/CMakeFiles/librom.dir/all
-CMakeFiles/player.dir/all: lib/agbabi/CMakeFiles/agbabi.dir/all
-CMakeFiles/player.dir/all: libs/libseven/CMakeFiles/seven.dir/all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/alex/code/gba/gba-player/build/CMakeFiles --progress-num=28,29 "Built target player"
-.PHONY : CMakeFiles/player.dir/all
+CMakeFiles/rom.dir/all: CMakeFiles/gba-player.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/rom.dir/build.make CMakeFiles/rom.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/rom.dir/build.make CMakeFiles/rom.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/alex/code/gba/gba-player/build/CMakeFiles --progress-num= "Built target rom"
+.PHONY : CMakeFiles/rom.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/player.dir/rule: cmake_check_build_system
+CMakeFiles/rom.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/alex/code/gba/gba-player/build/CMakeFiles 40
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/player.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/rom.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/alex/code/gba/gba-player/build/CMakeFiles 0
-.PHONY : CMakeFiles/player.dir/rule
+.PHONY : CMakeFiles/rom.dir/rule
 
 # Convenience name for target.
-player: CMakeFiles/player.dir/rule
-.PHONY : player
+rom: CMakeFiles/rom.dir/rule
+.PHONY : rom
 
 # clean rule for target.
-CMakeFiles/player.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/clean
-.PHONY : CMakeFiles/player.dir/clean
+CMakeFiles/rom.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/rom.dir/build.make CMakeFiles/rom.dir/clean
+.PHONY : CMakeFiles/rom.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/gba-player.dir
+
+# All Build rule for target.
+CMakeFiles/gba-player.dir/all: lib/libseven/CMakeFiles/seven.dir/all
+CMakeFiles/gba-player.dir/all: lib/rom/CMakeFiles/librom.dir/all
+CMakeFiles/gba-player.dir/all: lib/agbabi/CMakeFiles/agbabi.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gba-player.dir/build.make CMakeFiles/gba-player.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gba-player.dir/build.make CMakeFiles/gba-player.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/alex/code/gba/gba-player/build/CMakeFiles --progress-num=24,25 "Built target gba-player"
+.PHONY : CMakeFiles/gba-player.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/gba-player.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/alex/code/gba/gba-player/build/CMakeFiles 40
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/gba-player.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/alex/code/gba/gba-player/build/CMakeFiles 0
+.PHONY : CMakeFiles/gba-player.dir/rule
+
+# Convenience name for target.
+gba-player: CMakeFiles/gba-player.dir/rule
+.PHONY : gba-player
+
+# clean rule for target.
+CMakeFiles/gba-player.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gba-player.dir/build.make CMakeFiles/gba-player.dir/clean
+.PHONY : CMakeFiles/gba-player.dir/clean
+
+#=============================================================================
+# Target rules for target lib/libseven/CMakeFiles/seven.dir
+
+# All Build rule for target.
+lib/libseven/CMakeFiles/seven.dir/all:
+	$(MAKE) $(MAKESILENT) -f lib/libseven/CMakeFiles/seven.dir/build.make lib/libseven/CMakeFiles/seven.dir/depend
+	$(MAKE) $(MAKESILENT) -f lib/libseven/CMakeFiles/seven.dir/build.make lib/libseven/CMakeFiles/seven.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/alex/code/gba/gba-player/build/CMakeFiles --progress-num=30,31,32,33,34,35,36,37,38,39,40 "Built target seven"
+.PHONY : lib/libseven/CMakeFiles/seven.dir/all
+
+# Build rule for subdir invocation for target.
+lib/libseven/CMakeFiles/seven.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/alex/code/gba/gba-player/build/CMakeFiles 11
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lib/libseven/CMakeFiles/seven.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/alex/code/gba/gba-player/build/CMakeFiles 0
+.PHONY : lib/libseven/CMakeFiles/seven.dir/rule
+
+# Convenience name for target.
+seven: lib/libseven/CMakeFiles/seven.dir/rule
+.PHONY : seven
+
+# clean rule for target.
+lib/libseven/CMakeFiles/seven.dir/clean:
+	$(MAKE) $(MAKESILENT) -f lib/libseven/CMakeFiles/seven.dir/build.make lib/libseven/CMakeFiles/seven.dir/clean
+.PHONY : lib/libseven/CMakeFiles/seven.dir/clean
 
 #=============================================================================
 # Target rules for target lib/rom/CMakeFiles/librom.dir
@@ -173,7 +227,7 @@ CMakeFiles/player.dir/clean:
 lib/rom/CMakeFiles/librom.dir/all:
 	$(MAKE) $(MAKESILENT) -f lib/rom/CMakeFiles/librom.dir/build.make lib/rom/CMakeFiles/librom.dir/depend
 	$(MAKE) $(MAKESILENT) -f lib/rom/CMakeFiles/librom.dir/build.make lib/rom/CMakeFiles/librom.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/alex/code/gba/gba-player/build/CMakeFiles --progress-num=24,25,26,27 "Built target librom"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/alex/code/gba/gba-player/build/CMakeFiles --progress-num=26,27,28,29 "Built target librom"
 .PHONY : lib/rom/CMakeFiles/librom.dir/all
 
 # Build rule for subdir invocation for target.
@@ -217,32 +271,6 @@ agbabi: lib/agbabi/CMakeFiles/agbabi.dir/rule
 lib/agbabi/CMakeFiles/agbabi.dir/clean:
 	$(MAKE) $(MAKESILENT) -f lib/agbabi/CMakeFiles/agbabi.dir/build.make lib/agbabi/CMakeFiles/agbabi.dir/clean
 .PHONY : lib/agbabi/CMakeFiles/agbabi.dir/clean
-
-#=============================================================================
-# Target rules for target libs/libseven/CMakeFiles/seven.dir
-
-# All Build rule for target.
-libs/libseven/CMakeFiles/seven.dir/all:
-	$(MAKE) $(MAKESILENT) -f libs/libseven/CMakeFiles/seven.dir/build.make libs/libseven/CMakeFiles/seven.dir/depend
-	$(MAKE) $(MAKESILENT) -f libs/libseven/CMakeFiles/seven.dir/build.make libs/libseven/CMakeFiles/seven.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/alex/code/gba/gba-player/build/CMakeFiles --progress-num=30,31,32,33,34,35,36,37,38,39,40 "Built target seven"
-.PHONY : libs/libseven/CMakeFiles/seven.dir/all
-
-# Build rule for subdir invocation for target.
-libs/libseven/CMakeFiles/seven.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/alex/code/gba/gba-player/build/CMakeFiles 11
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 libs/libseven/CMakeFiles/seven.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/alex/code/gba/gba-player/build/CMakeFiles 0
-.PHONY : libs/libseven/CMakeFiles/seven.dir/rule
-
-# Convenience name for target.
-seven: libs/libseven/CMakeFiles/seven.dir/rule
-.PHONY : seven
-
-# clean rule for target.
-libs/libseven/CMakeFiles/seven.dir/clean:
-	$(MAKE) $(MAKESILENT) -f libs/libseven/CMakeFiles/seven.dir/build.make libs/libseven/CMakeFiles/seven.dir/clean
-.PHONY : libs/libseven/CMakeFiles/seven.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

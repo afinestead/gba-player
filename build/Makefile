@@ -65,18 +65,6 @@ CMAKE_BINARY_DIR = /Users/alex/code/gba/gba-player/build
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/local/Cellar/cmake/3.21.1/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
-
-# Special rule for the target install/local
-install/local/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/local/Cellar/cmake/3.21.1/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local/fast
-
 # Special rule for the target install/strip
 install/strip: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
@@ -101,15 +89,6 @@ install/fast: preinstall/fast
 	/usr/local/Cellar/cmake/3.21.1/bin/cmake -P cmake_install.cmake
 .PHONY : install/fast
 
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-.PHONY : list_install_components/fast
-
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -129,6 +108,27 @@ edit_cache:
 # Special rule for the target edit_cache
 edit_cache/fast: edit_cache
 .PHONY : edit_cache/fast
+
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/local/Cellar/cmake/3.21.1/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/local/Cellar/cmake/3.21.1/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
+
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+.PHONY : list_install_components/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -162,17 +162,43 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named player
+# Target rules for targets named rom
 
 # Build rule for target.
-player: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 player
-.PHONY : player
+rom: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 rom
+.PHONY : rom
 
 # fast build rule for target.
-player/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/build
-.PHONY : player/fast
+rom/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/rom.dir/build.make CMakeFiles/rom.dir/build
+.PHONY : rom/fast
+
+#=============================================================================
+# Target rules for targets named gba-player
+
+# Build rule for target.
+gba-player: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gba-player
+.PHONY : gba-player
+
+# fast build rule for target.
+gba-player/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gba-player.dir/build.make CMakeFiles/gba-player.dir/build
+.PHONY : gba-player/fast
+
+#=============================================================================
+# Target rules for targets named seven
+
+# Build rule for target.
+seven: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 seven
+.PHONY : seven
+
+# fast build rule for target.
+seven/fast:
+	$(MAKE) $(MAKESILENT) -f lib/libseven/CMakeFiles/seven.dir/build.make lib/libseven/CMakeFiles/seven.dir/build
+.PHONY : seven/fast
 
 #=============================================================================
 # Target rules for targets named librom
@@ -200,25 +226,12 @@ agbabi/fast:
 	$(MAKE) $(MAKESILENT) -f lib/agbabi/CMakeFiles/agbabi.dir/build.make lib/agbabi/CMakeFiles/agbabi.dir/build
 .PHONY : agbabi/fast
 
-#=============================================================================
-# Target rules for targets named seven
-
-# Build rule for target.
-seven: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 seven
-.PHONY : seven
-
-# fast build rule for target.
-seven/fast:
-	$(MAKE) $(MAKESILENT) -f libs/libseven/CMakeFiles/seven.dir/build.make libs/libseven/CMakeFiles/seven.dir/build
-.PHONY : seven/fast
-
 src/main.obj: src/main.c.obj
 .PHONY : src/main.obj
 
 # target to build an object file
 src/main.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/src/main.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gba-player.dir/build.make CMakeFiles/gba-player.dir/src/main.c.obj
 .PHONY : src/main.c.obj
 
 src/main.i: src/main.c.i
@@ -226,7 +239,7 @@ src/main.i: src/main.c.i
 
 # target to preprocess a source file
 src/main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/src/main.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gba-player.dir/build.make CMakeFiles/gba-player.dir/src/main.c.i
 .PHONY : src/main.c.i
 
 src/main.s: src/main.c.s
@@ -234,7 +247,7 @@ src/main.s: src/main.c.s
 
 # target to generate assembly for a file
 src/main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/player.dir/build.make CMakeFiles/player.dir/src/main.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/gba-player.dir/build.make CMakeFiles/gba-player.dir/src/main.c.s
 .PHONY : src/main.c.s
 
 # Help Target
@@ -249,9 +262,10 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
+	@echo "... rom"
 	@echo "... agbabi"
+	@echo "... gba-player"
 	@echo "... librom"
-	@echo "... player"
 	@echo "... seven"
 	@echo "... src/main.obj"
 	@echo "... src/main.i"

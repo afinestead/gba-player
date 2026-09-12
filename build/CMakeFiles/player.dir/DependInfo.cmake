@@ -14,7 +14,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
   "/Users/alex/code/gba/gba-player/build/lib/rom/CMakeFiles/librom.dir/DependInfo.cmake"
-  "/Users/alex/code/gba/gba-player/build/libs/libseven/CMakeFiles/seven.dir/DependInfo.cmake"
+  "/Users/alex/code/gba/gba-player/build/lib/libseven/CMakeFiles/seven.dir/DependInfo.cmake"
   "/Users/alex/code/gba/gba-player/build/lib/agbabi/CMakeFiles/agbabi.dir/DependInfo.cmake"
   )
 
