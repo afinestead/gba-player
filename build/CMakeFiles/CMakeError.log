@@ -1,0 +1,10 @@
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/bin/arm-none-eabi-gcc 
+Build flags: 
+Id flags: -c;--target=arm-none-eabi 
+
+The output was:
+1
+arm-none-eabi-gcc: error: unrecognized command-line option '--target=arm-none-eabi'
+
+

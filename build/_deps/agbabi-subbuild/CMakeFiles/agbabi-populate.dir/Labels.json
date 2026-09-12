@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/CMakeFiles/agbabi-populate"
+		},
+		{
+			"file" : "/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/CMakeFiles/agbabi-populate.rule"
+		},
+		{
+			"file" : "/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/CMakeFiles/agbabi-populate-complete.rule"
+		},
+		{
+			"file" : "/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/agbabi-populate-prefix/src/agbabi-populate-stamp/agbabi-populate-build.rule"
+		},
+		{
+			"file" : "/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/agbabi-populate-prefix/src/agbabi-populate-stamp/agbabi-populate-configure.rule"
+		},
+		{
+			"file" : "/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/agbabi-populate-prefix/src/agbabi-populate-stamp/agbabi-populate-download.rule"
+		},
+		{
+			"file" : "/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/agbabi-populate-prefix/src/agbabi-populate-stamp/agbabi-populate-install.rule"
+		},
+		{
+			"file" : "/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/agbabi-populate-prefix/src/agbabi-populate-stamp/agbabi-populate-mkdir.rule"
+		},
+		{
+			"file" : "/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/agbabi-populate-prefix/src/agbabi-populate-stamp/agbabi-populate-patch.rule"
+		},
+		{
+			"file" : "/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/agbabi-populate-prefix/src/agbabi-populate-stamp/agbabi-populate-test.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"agbabi-populate"
+		],
+		"name" : "agbabi-populate"
+	}
+}

@@ -1,0 +1,34 @@
+lib/agbabi/CMakeFiles/agbabi.dir/source/rtc.c.obj: \
+ /Users/alex/code/gba/gba-toolchain/lib/agbabi/source/rtc.c \
+ /Users/alex/code/gba/gba-toolchain/lib/agbabi/include/agbabi.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/lib/gcc/arm-none-eabi/14.2.1/include/stddef.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/sys/types.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/_ansi.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/newlib.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/_newlib_version.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/sys/config.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/machine/ieeefp.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/sys/features.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/sys/cdefs.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/machine/_types.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/sys/_types.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/machine/endian.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/machine/_endian.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/sys/select.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/sys/_sigset.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/sys/_timeval.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/sys/timespec.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/sys/_timespec.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/sys/_pthreadtypes.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/sys/sched.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/machine/types.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/sys/time.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/time.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/_ansi.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/sys/reent.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/sys/lock.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/machine/time.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/sys/_locale.h \
+ /Users/alex/code/arm-gnu-toolchain-14.2.rel1-darwin-x86_64-arm-none-eabi/arm-none-eabi/include/machine/_time.h

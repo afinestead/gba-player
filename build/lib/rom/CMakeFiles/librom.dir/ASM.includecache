@@ -1,0 +1,12 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/alex/code/gba/gba-toolchain/lib/rom/crt0.s
+
+/Users/alex/code/gba/gba-toolchain/lib/rom/rom.header.s
+

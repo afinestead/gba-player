@@ -1,0 +1,13 @@
+# Target labels
+ agbabi-populate
+# Source files and their labels
+/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/CMakeFiles/agbabi-populate
+/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/CMakeFiles/agbabi-populate.rule
+/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/CMakeFiles/agbabi-populate-complete.rule
+/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/agbabi-populate-prefix/src/agbabi-populate-stamp/agbabi-populate-build.rule
+/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/agbabi-populate-prefix/src/agbabi-populate-stamp/agbabi-populate-configure.rule
+/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/agbabi-populate-prefix/src/agbabi-populate-stamp/agbabi-populate-download.rule
+/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/agbabi-populate-prefix/src/agbabi-populate-stamp/agbabi-populate-install.rule
+/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/agbabi-populate-prefix/src/agbabi-populate-stamp/agbabi-populate-mkdir.rule
+/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/agbabi-populate-prefix/src/agbabi-populate-stamp/agbabi-populate-patch.rule
+/Users/alex/code/gba/gba-player/build/_deps/agbabi-subbuild/agbabi-populate-prefix/src/agbabi-populate-stamp/agbabi-populate-test.rule

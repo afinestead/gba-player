@@ -1,0 +1,4 @@
+# Hashes of file build rules.
+dab717b715df5c731a1cf72919972877 /Users/alex/code/gba/gba-toolchain/lib/libseven/stamp/libseven_proj-download
+080c706960226876da1cfe7875dfc2ac /Users/alex/code/gba/gba-toolchain/lib/libseven/stamp/libseven_proj-mkdir
+a1515b6b919faee2e4588ba10859b824 /Users/alex/code/gba/gba-toolchain/lib/libseven/stamp/libseven_proj-patch
