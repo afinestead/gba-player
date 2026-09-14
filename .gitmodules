@@ -1,6 +1,3 @@
-[submodule "libs/libseven"]
-	path = libs/libseven
-	url = https://github.com/sdk-seven/libseven.git
 [submodule "lib/libseven"]
 	path = lib/libseven
 	url = https://github.com/sdk-seven/libseven.git
