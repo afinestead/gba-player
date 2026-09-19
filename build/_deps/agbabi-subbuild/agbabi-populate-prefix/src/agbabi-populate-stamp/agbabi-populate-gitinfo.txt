@@ -1,3 +1,0 @@
-repository='https://github.com/felixjones/agbabi.git'
-module=''
-tag='origin'
