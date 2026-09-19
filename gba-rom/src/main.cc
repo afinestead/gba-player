@@ -1,5 +1,7 @@
 #include <cstdint>
 
+#include "frame_buffer.h"
+
 #include "seven/memory.h"
 #include "seven/video.h"
 
