@@ -1,11 +1,15 @@
 #include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "esp_log.h"
+#include "serial_task.h"
+#include "wifi_task.h"
 
-extern "C" void app_main()
-{
-    while (true) {
-        ESP_LOGI("MAIN", "Hello from ESP32-S3!");
-        vTaskDelay(pdMS_TO_TICKS(1000));
-    }
+namespace {
+    auto serial_task = task::SerialTask();
+    auto wifi_task = task::WifiTask();    
+}
+
+extern "C" void vApplicationIdleHook( void ) {}
+
+extern "C" void app_main() {
+    serial_task.init();
+    wifi_task.init();
 }
