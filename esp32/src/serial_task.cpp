@@ -11,12 +11,19 @@ SerialTask* SerialTask::handle() {
     return serial_task::handle;
 }
 
+bool SerialTask::enqueueMessage(const Message& msg) {
+    return mailbox_.put(msg, 0);
+}
+
 void SerialTask::start() {
     serial_task::handle = this;
     
+    Message recvd;
     while (true) {
-        ESP_LOGI("SerialTask", "tick");
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        bool ok = mailbox_.get(&recvd, 1000);
+        if (ok) {
+            ESP_LOGI("SerialTask", "%s", recvd.s);
+        }
     }
 }
 };

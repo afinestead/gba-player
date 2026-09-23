@@ -1,4 +1,5 @@
 #include "wifi_task.h"
+#include "serial_task.h"
 
 #include "nvs_flash.h"
 #include "esp_event.h"
@@ -106,7 +107,7 @@ void WifiTask::start() {
 
     while (true) {
         // Check for a connection event
-        uint32_t event = wait(0);
+        uint32_t event = wait(500);
 
         if (event & static_cast<uint32_t>(Event::CONNECTED)) {
             connected_ = true;
@@ -115,19 +116,14 @@ void WifiTask::start() {
             esp_wifi_connect();
         }
 
+        SerialTask::Message msg{"testing"};
+        SerialTask::handle()->enqueueMessage(msg);
 
         if (connected_) {
             sockaddr_in source{};
             socklen_t source_len = sizeof(source);
 
-            int len = recvfrom(
-                sock,
-                recv_buffer_,
-                sizeof(recv_buffer_),
-                0,
-                reinterpret_cast<sockaddr*>(&source),
-                &source_len
-            );
+            int len = recv(sock, recv_buffer_, sizeof(recv_buffer_), 0);
             if (len > 0) {
                 receivePacket(len);
             }

@@ -1,27 +1,35 @@
 #pragma once
 
 #include "task.h"
+#include "mailbox.h"
 
 namespace task {
 
-namespace serial_task {
-static constexpr uint8_t TASK_PRIORITY = 2;
-static constexpr size_t TASK_STACK_SIZE = 2048;
-static constexpr char TASK_NAME[] = "SerialTask";
-}
+static constexpr size_t SERIAL_TASK_STACK_SIZE = 2048;
 
-class SerialTask : public Task<serial_task::TASK_STACK_SIZE> {
+class SerialTask : public Task<SERIAL_TASK_STACK_SIZE> {
 public:
+    static constexpr size_t MAX_MESSAGE_LEN = 40;
+
+    struct Message {
+        char s[MAX_MESSAGE_LEN];
+    };
+
     SerialTask()
-        : Task<serial_task::TASK_STACK_SIZE>(
-            serial_task::TASK_NAME, serial_task::TASK_PRIORITY
-        )
+        : Task<SERIAL_TASK_STACK_SIZE>(TASK_NAME, TASK_PRIORITY)
     {}
 
-    SerialTask* handle();
+    static SerialTask* handle();
+
+    bool enqueueMessage(const Message& msg);
 
 protected:
+    static constexpr uint8_t TASK_PRIORITY = 2;
+    static constexpr char TASK_NAME[] = "SerialTask";
+
     void start() override;
+private:
+    Mailbox<Message, 10> mailbox_;
 };
 
 } // namespace task
