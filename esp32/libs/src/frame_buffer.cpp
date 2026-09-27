@@ -1,6 +1,6 @@
 #include "frame_buffer.h"
 
-namespace frame_buffer {
+namespace libs {
 
 void FrameBufferManager::init() {
 

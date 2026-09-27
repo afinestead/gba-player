@@ -1,5 +1,6 @@
 #include "wifi_task.h"
 #include "serial_task.h"
+#include "libs/include/helpers.h"
 
 #include "nvs_flash.h"
 #include "esp_event.h"
@@ -8,130 +9,191 @@
 #include "esp_wifi.h"
 
 #include <cstring>
-#include <socket.h>
+#include <algorithm>
 
-
-static constexpr char SSID[] = "";
-static constexpr char PASSWORD[] = "";
 
 namespace task {
 
 namespace wifi_task {
 static WifiTask* handle;
-
-static const wifi_init_config_t config = WIFI_INIT_CONFIG_DEFAULT();
-
-static void init() {
-    nvs_flash_init();
-    esp_netif_init();
-    esp_event_loop_create_default();
-    esp_netif_create_default_wifi_sta();
-
-    esp_wifi_init(&config);
-
-    wifi_config_t wifi_config{};
-    
-    std::strncpy(
-        reinterpret_cast<char*>(wifi_config.sta.ssid),
-        SSID,
-        sizeof(wifi_config.sta.ssid)
-    );
-
-    std::strncpy(
-        reinterpret_cast<char*>(wifi_config.sta.password),
-        PASSWORD,
-        sizeof(wifi_config.sta.password)
-    );
-
-    wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
-
-    esp_wifi_set_mode(WIFI_MODE_STA);
-    esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
 }
 
+static void recordToStr(const wifi_ap_record_t& record, char* buffer, size_t buffer_size) {
+    char* buf_ptr = buffer;
+    uint8_t* ssid_ptr = const_cast<uint8_t*>(record.ssid);
+    for (uint8_t ii = 0; ii < buffer_size - 7 && *ssid_ptr; ++ii) {
+        *buf_ptr++ = *ssid_ptr++;
+    }
+    std::fill(buf_ptr, buffer + buffer_size, ' ');
+    if (*ssid_ptr) {
+        std::fill(buf_ptr, buffer + buffer_size - 4, '.');
+    }
+
+    const uint8_t rssi_strength = (
+        record.rssi > -50 ? 3 :
+        record.rssi > -70 ? 2 :
+                            1
+    );
+    for (uint8_t ii = buffer_size; ii >= buffer_size - rssi_strength; ii--) {
+        buffer[ii] = '*';
+    }   
+}
 
 static void event_callback(
     void*,
     esp_event_base_t event_base,
     int32_t event_id,
     void*
-)
-{
+) {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
-        handle->notify(static_cast<uint32_t>(WifiTask::Event::DISCONNECTED));
+        wifi_task::handle->notify(static_cast<uint32_t>(WifiTask::Event::DISCONNECTED));
     }
     else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
-        handle->notify(static_cast<uint32_t>(WifiTask::Event::CONNECTED));
+        wifi_task::handle->notify(static_cast<uint32_t>(WifiTask::Event::CONNECTED));
     }
 }
-
-}
-
 
 WifiTask* WifiTask::handle() {
     return wifi_task::handle;
 }
 
 bool WifiTask::connected() {
-    return connected_;
+    return state_ == State::CONNECTED;
+}
+
+void WifiTask::scanNetworks() {
+    notify(static_cast<uint32_t>(Event::START_SCAN));
+}
+
+void WifiTask::connect() {
+    notify(static_cast<uint32_t>(Event::CONNECT));
+}
+
+void WifiTask::disconnect() {
+    notify(static_cast<uint32_t>(Event::DISCONNECT));
+}
+
+void WifiTask::performScan() {
+    uint16_t num_networks = 0;
+    esp_wifi_scan_start(nullptr, true);
+    esp_wifi_scan_get_ap_num(&num_networks);
+
+    num_networks = std::min(num_networks, static_cast<uint16_t>(MAX_AP_RECORDS));
+
+    esp_wifi_scan_get_ap_records(&num_networks, ap_records_);
+
+    std::sort(
+        ap_records_,
+        ap_records_ + num_networks,
+        [](const wifi_ap_record_t& left, const wifi_ap_record_t& right) {
+            return left.rssi > right.rssi;
+        }
+    );
+
+    for (int i = 0; i < num_networks; ++i) {
+        SerialTask::Message msg;
+        recordToStr(ap_records_[i], msg.s, sizeof(msg.s));
+        SerialTask::handle()->enqueueMessage(msg);
+    }
+
+    if (!auto_connect_) {
+        return;
+    }
+
+    for (const auto& creds : known_credentials_) {
+        for (const auto& record : ap_records_) {
+            if (!std::strncmp(creds.ssid, reinterpret_cast<const char*>(record.ssid), sizeof(record.ssid))) {
+                std::copy_n(creds.ssid, sizeof(creds.ssid), config_.sta.ssid);
+                std::copy_n(creds.password, sizeof(creds.password), config_.sta.password);
+                notify(static_cast<uint32_t>(Event::CONNECT));
+                return;
+            }
+        }
+    }
 }
 
 void WifiTask::start() {
     wifi_task::handle = this;
+    nvs_driver_.init();
 
-    wifi_task::init();
+    nvs_driver_.load(
+        NVS_CREDS_NS,
+        "creds0",
+        reinterpret_cast<uint8_t*>(known_credentials_),
+        sizeof(Credentials) * MAX_STORED_CREDENTIALS
+    );
+
+    const wifi_init_config_t init_config = WIFI_INIT_CONFIG_DEFAULT();
+    esp_netif_init();
+    esp_event_loop_create_default();
+    esp_netif_create_default_wifi_sta();
+    esp_wifi_init(&init_config);
+    esp_wifi_set_mode(WIFI_MODE_STA);
+
+    config_.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;    
+    esp_wifi_set_config(WIFI_IF_STA, &config_);
+
     esp_wifi_start();
-    esp_wifi_connect();
 
     esp_event_handler_register(
         WIFI_EVENT,
         WIFI_EVENT_STA_DISCONNECTED,
-        &wifi_task::event_callback,
+        &event_callback,
         nullptr
     );
 
     esp_event_handler_register(
         IP_EVENT,
         IP_EVENT_STA_GOT_IP,
-        &wifi_task::event_callback,
+        &event_callback,
         nullptr
     );
 
-    int sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-
-    sockaddr_in addr{};
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(5000);
-    addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    bind(sock, (sockaddr*)&addr, sizeof(addr));
+    notify(static_cast<uint32_t>(Event::START_SCAN));
 
     while (true) {
-        // Check for a connection event
-        uint32_t event = wait(500);
+        uint32_t event = wait(10000);
 
-        if (event & static_cast<uint32_t>(Event::CONNECTED)) {
-            connected_ = true;
-        } else if (event & static_cast<uint32_t>(Event::DISCONNECTED)) {
-            connected_ = false;
+        if ((event & static_cast<uint32_t>(Event::START_SCAN)) && state_ == State::DISCONNECTED) {
+            state_ = State::SCANNING;
+            performScan();
+        }
+
+        if ((event & static_cast<uint32_t>(Event::CONNECT)) && state_ == State::SCANNING) {
+            esp_wifi_set_config(WIFI_IF_STA, &config_);
             esp_wifi_connect();
         }
 
-        SerialTask::Message msg{"testing"};
-        SerialTask::handle()->enqueueMessage(msg);
+        if ((event & static_cast<uint32_t>(Event::CONNECTED)) && state_ == State::SCANNING) {
+            state_ = State::CONNECTED;
+        }
 
-        if (connected_) {
-            sockaddr_in source{};
-            socklen_t source_len = sizeof(source);
-
-            int len = recv(sock, recv_buffer_, sizeof(recv_buffer_), 0);
-            if (len > 0) {
-                receivePacket(len);
+        if (event & static_cast<uint32_t>(Event::DISCONNECT)) {
+            if (state_ == State::CONNECTED) {
+                auto_connect_ = false;
+                esp_wifi_disconnect();
             }
+        }
+
+        if ((event & static_cast<uint32_t>(Event::DISCONNECTED)) && state_ != State::DISCONNECTED) {
+            state_ = State::DISCONNECTED;
+        }
+
+        switch (state_) {
+            case State::DISCONNECTED:
+                SerialTask::handle()->enqueueMessage({"DISCONNECTED"});
+                break;
+            case State::SCANNING:
+                SerialTask::handle()->enqueueMessage({"SCANNING"});
+                break;
+            case State::CONNECTED:
+                SerialTask::handle()->enqueueMessage({"CONNECTED"});
+                break;
+            default:
+                SerialTask::handle()->enqueueMessage({"UNKNOWN"});
+                break;
         }
     }
 }
 
-void WifiTask::receivePacket(size_t len) {
-    ESP_LOGI("WifiTask", "Received %d bytes: %.*s", len, len, recv_buffer_);
 }
-};

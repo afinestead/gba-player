@@ -4,7 +4,7 @@
 #include "esp_attr.h"
 
 
-namespace frame_buffer {
+namespace libs {
 
 class FrameBufferManager {
 public:
@@ -16,8 +16,8 @@ public:
 private:
     DMA_ATTR static uint8_t frame_buffers[NUM_BUFFERS][FRAME_SIZE];
 
-    Mailbox<uint8_t*, NUM_BUFFERS> ready_mailbox_;
-    Mailbox<uint8_t*, NUM_BUFFERS> free_mailbox_;
+    libs::Mailbox<uint8_t*, NUM_BUFFERS> ready_mailbox_;
+    libs::Mailbox<uint8_t*, NUM_BUFFERS> free_mailbox_;
 
 
 };

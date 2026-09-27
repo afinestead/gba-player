@@ -6,6 +6,8 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 
+namespace libs {
+
 template<typename T, size_t Size>
 class Mailbox {
 public:
@@ -29,3 +31,5 @@ private:
     QueueHandle_t handle_;
     uint8_t buffer_[Size * sizeof(T)];
 };
+
+}
