@@ -1,5 +1,5 @@
 idf_component_register(
-	SRCS "src/frame_buffer.cpp"
+	SRCS "src/udp_server.cpp"
 	INCLUDE_DIRS "include"
 	REQUIRES freertos esp_common
 )

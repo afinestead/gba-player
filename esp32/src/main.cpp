@@ -1,15 +1,20 @@
 #include "freertos/FreeRTOS.h"
 #include "gba_task.h"
+#include "network_task.h"
 #include "serial_task.h"
 #include "wifi_task.h"
 
 #include "esp_err.h"
 #include "nvs_flash.h"
 
+
+
 namespace {
     auto serial_task = task::SerialTask();
     auto wifi_task = task::WifiTask();
-    auto gba_task = task::GbaTask();  
+    auto gba_task = task::GbaTask();
+    auto network_task = task::NetworkTask();
+
 }
 
 extern "C" void vApplicationIdleHook( void ) {}
@@ -24,4 +29,5 @@ extern "C" void app_main() {
     serial_task.init();
     wifi_task.init();
     gba_task.init();
+    network_task.init();
 }

@@ -1,7 +1,10 @@
 #include "network_task.h"
-#include <socket.h>
+#include <sys/socket.h>
+#include <algorithm>
 
 namespace task {
+
+FrameBuffer NetworkTask::buffers_{};
 
 namespace network_task {
 static NetworkTask* handle;
@@ -25,14 +28,29 @@ void NetworkTask::start() {
     sockaddr_in source{};
     socklen_t source_len = sizeof(source);
 
-    int len = recv(sock, recv_buffer_, sizeof(recv_buffer_), 0);
-    if (len > 0) {
-        // receivePacket(len);
-    }
-    
     while (true) {
-        delay(1000);
+        int len = recvfrom(
+            sock,
+            recv_buffer_,
+            RECV_BUFFER_LEN,
+            0,
+            reinterpret_cast<sockaddr*>(&source),
+            &source_len
+        );
+        if (len > 0) {
+            server_.receivePacket(recv_buffer_, static_cast<size_t>(len));
+        }
     }
+}
+
+void NetworkTask::publishFrame(void*, const uint8_t* frame, size_t length) {
+    auto buffer = buffers_.acquireFree(0);
+    if (!buffer || length != gba_protocol::network::FRAME_SIZE) {
+        return;
+    }
+
+    std::copy_n(frame, length, buffer->data);
+    buffers_.publishReady(buffer->index);
 }
 
 } // namespace task
