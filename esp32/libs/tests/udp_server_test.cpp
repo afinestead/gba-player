@@ -10,96 +10,92 @@
 
 namespace {
 
-struct CapturedFrame {
-    size_t callback_count = 0;
-    std::vector<uint8_t> bytes;
-};
-
-void captureFrame(void* context, const uint8_t* frame, size_t length) {
-    auto* captured = static_cast<CapturedFrame*>(context);
-    ++captured->callback_count;
-    captured->bytes.assign(frame, frame + length);
-}
-
-std::vector<uint8_t> makePacket(uint32_t frame_id, uint16_t packet_index, uint16_t packet_count, uint8_t value) {
+std::vector<uint8_t> makePacket(uint32_t frame_id, uint16_t packet_index, uint8_t value) {
     using namespace gba_protocol::network;
-    const size_t chunk_size = (gba_protocol::network::FRAME_SIZE + packet_count - 1) / packet_count;
-    const size_t offset = packet_index * chunk_size;
-    const size_t payload_length = std::min(chunk_size, gba_protocol::network::FRAME_SIZE - offset);
+    const size_t offset = packet_index * MAX_VIDEO_PACKET_CHUNK_SIZE;
+    const size_t payload_length = std::min(MAX_VIDEO_PACKET_CHUNK_SIZE, FRAME_SIZE - offset);
     const size_t header_length = sizeof(PacketHeader) + sizeof(VideoPacketHeader);
     std::vector<uint8_t> packet(header_length + payload_length, value);
     const PacketHeader packet_header{PacketType::VIDEO_FRAME};
-    const VideoPacketHeader video_header{frame_id, packet_index, packet_count};
+    const VideoPacketHeader video_header{frame_id, packet_index, VIDEO_FRAME_PACKET_COUNT};
     std::memcpy(packet.data(), &packet_header, sizeof(packet_header));
     std::memcpy(packet.data() + sizeof(packet_header), &video_header, sizeof(video_header));
     return packet;
 }
 
 void testAssemblesOutOfOrderAndIgnoresDuplicates() {
-    CapturedFrame captured;
-    libs::network::UdpServer server{captureFrame, &captured};
-    const auto first_packet = makePacket(7, 0, 2, 0xA1);
-    const auto second_packet = makePacket(7, 1, 2, 0xB2);
+    libs::network::UdpServer server;
+    std::vector<uint8_t> frame(gba_protocol::network::FRAME_SIZE);
+    const auto first_packet = makePacket(7, 0, 0xA1);
+    const auto second_packet = makePacket(7, 1, 0xB2);
 
-    server.receivePacket(second_packet.data(), second_packet.size());
-    server.receivePacket(second_packet.data(), second_packet.size());
-    assert(captured.callback_count == 0);
+    assert(!server.receivePacket(second_packet.data(), second_packet.size(), frame.data()));
+    assert(!server.receivePacket(second_packet.data(), second_packet.size(), frame.data()));
 
-    server.receivePacket(first_packet.data(), first_packet.size());
-    assert(captured.callback_count == 1);
-    assert(captured.bytes.size() == gba_protocol::network::FRAME_SIZE);
-    for (size_t i = 0; i < captured.bytes.size() / 2; ++i) {
-        assert(captured.bytes[i] == 0xA1);
+    for (uint16_t packet_index = 2; packet_index < gba_protocol::network::VIDEO_FRAME_PACKET_COUNT; ++packet_index) {
+        const auto packet = makePacket(7, packet_index, 0xB2);
+        assert(!server.receivePacket(packet.data(), packet.size(), frame.data()));
     }
-    for (size_t i = captured.bytes.size() / 2; i < captured.bytes.size(); ++i) {
-        assert(captured.bytes[i] == 0xB2);
+
+    assert(server.receivePacket(first_packet.data(), first_packet.size(), frame.data()));
+    assert(frame.size() == gba_protocol::network::FRAME_SIZE);
+    for (size_t i = 0; i < gba_protocol::network::MAX_VIDEO_PACKET_CHUNK_SIZE; ++i) {
+        assert(frame[i] == 0xA1);
+    }
+    for (size_t i = gba_protocol::network::MAX_VIDEO_PACKET_CHUNK_SIZE; i < frame.size(); ++i) {
+        assert(frame[i] == 0xB2);
     }
 }
 
 void testNewFrameReplacesIncompleteFrame() {
-    CapturedFrame captured;
-    libs::network::UdpServer server{captureFrame, &captured};
-    const auto old_frame_packet = makePacket(0, 0, 2, 0x10);
-    const auto new_frame_first_packet = makePacket(1, 0, 2, 0xA1);
-    const auto new_frame_second_packet = makePacket(1, 1, 2, 0xB2);
+    libs::network::UdpServer server;
+    std::vector<uint8_t> frame(gba_protocol::network::FRAME_SIZE);
+    const auto old_frame_packet = makePacket(0, 0, 0x10);
+    const auto new_frame_first_packet = makePacket(1, 0, 0xA1);
 
-    server.receivePacket(old_frame_packet.data(), old_frame_packet.size());
-    assert(captured.callback_count == 0);
+    assert(!server.receivePacket(old_frame_packet.data(), old_frame_packet.size(), frame.data()));
 
-    server.receivePacket(new_frame_first_packet.data(), new_frame_first_packet.size());
-    server.receivePacket(new_frame_second_packet.data(), new_frame_second_packet.size());
-
-    assert(captured.callback_count == 1);
-    assert(captured.bytes.size() == gba_protocol::network::FRAME_SIZE);
-    for (size_t i = 0; i < captured.bytes.size() / 2; ++i) {
-        assert(captured.bytes[i] == 0xA1);
+    assert(!server.receivePacket(new_frame_first_packet.data(), new_frame_first_packet.size(), frame.data()));
+    for (uint16_t packet_index = 1; packet_index < gba_protocol::network::VIDEO_FRAME_PACKET_COUNT; ++packet_index) {
+        const auto packet = makePacket(1, packet_index, 0xB2);
+        const bool frame_complete = server.receivePacket(packet.data(), packet.size(), frame.data());
+        assert(frame_complete == (packet_index + 1 == gba_protocol::network::VIDEO_FRAME_PACKET_COUNT));
     }
-    for (size_t i = captured.bytes.size() / 2; i < captured.bytes.size(); ++i) {
-        assert(captured.bytes[i] == 0xB2);
+
+    assert(frame.size() == gba_protocol::network::FRAME_SIZE);
+    for (size_t i = 0; i < gba_protocol::network::MAX_VIDEO_PACKET_CHUNK_SIZE; ++i) {
+        assert(frame[i] == 0xA1);
+    }
+    for (size_t i = gba_protocol::network::MAX_VIDEO_PACKET_CHUNK_SIZE; i < frame.size(); ++i) {
+        assert(frame[i] == 0xB2);
     }
 }
 
 void testRejectsShortAndInvalidPackets() {
-    CapturedFrame captured;
-    libs::network::UdpServer server{captureFrame, &captured};
+    libs::network::UdpServer server;
+    std::vector<uint8_t> frame(gba_protocol::network::FRAME_SIZE);
     const uint8_t short_packet[] = {0x01};
-    server.receivePacket(short_packet, sizeof(short_packet));
+    assert(!server.receivePacket(short_packet, sizeof(short_packet), frame.data()));
 
     using namespace gba_protocol::network;
     const PacketHeader packet_header{PacketType::VIDEO_FRAME};
-    const VideoPacketHeader invalid_header{9, 2, 2};
+    const VideoPacketHeader invalid_header{9, 2, static_cast<uint16_t>(VIDEO_FRAME_PACKET_COUNT - 1)};
     uint8_t invalid_packet[sizeof(packet_header) + sizeof(invalid_header)]{};
     std::memcpy(invalid_packet, &packet_header, sizeof(packet_header));
     std::memcpy(invalid_packet + sizeof(packet_header), &invalid_header, sizeof(invalid_header));
-    server.receivePacket(invalid_packet, sizeof(invalid_packet));
+    assert(!server.receivePacket(invalid_packet, sizeof(invalid_packet), frame.data()));
 
-    const VideoPacketHeader invalid_offset_header{10, 16384, 20000};
-    uint8_t invalid_offset_packet[sizeof(packet_header) + sizeof(invalid_offset_header) + 2]{};
-    std::memcpy(invalid_offset_packet, &packet_header, sizeof(packet_header));
-    std::memcpy(invalid_offset_packet + sizeof(packet_header), &invalid_offset_header, sizeof(invalid_offset_header));
-    server.receivePacket(invalid_offset_packet, sizeof(invalid_offset_packet));
-
-    assert(captured.callback_count == 0);
+    const VideoPacketHeader oversized_chunk_header{10, 0, VIDEO_FRAME_PACKET_COUNT};
+    uint8_t oversized_chunk_packet[
+        sizeof(packet_header) + sizeof(oversized_chunk_header) + MAX_VIDEO_PACKET_CHUNK_SIZE + 1
+    ]{};
+    std::memcpy(oversized_chunk_packet, &packet_header, sizeof(packet_header));
+    std::memcpy(
+        oversized_chunk_packet + sizeof(packet_header),
+        &oversized_chunk_header,
+        sizeof(oversized_chunk_header)
+    );
+    assert(!server.receivePacket(oversized_chunk_packet, sizeof(oversized_chunk_packet), frame.data()));
 }
 
 }

@@ -1,6 +1,5 @@
 #include "network_task.h"
 #include <sys/socket.h>
-#include <algorithm>
 
 namespace task {
 
@@ -27,6 +26,7 @@ void NetworkTask::start() {
 
     sockaddr_in source{};
     socklen_t source_len = sizeof(source);
+    auto write_buffer = buffers_.acquireFree();
 
     while (true) {
         int len = recvfrom(
@@ -38,19 +38,17 @@ void NetworkTask::start() {
             &source_len
         );
         if (len > 0) {
-            server_.receivePacket(recv_buffer_, static_cast<size_t>(len));
+            const bool frame_complete = server_.receivePacket(
+                recv_buffer_,
+                static_cast<size_t>(len),
+                write_buffer->data
+            );
+            if (frame_complete) {
+                buffers_.publishReady(write_buffer->index);
+                write_buffer = buffers_.acquireFree();
+            }
         }
     }
-}
-
-void NetworkTask::publishFrame(void*, const uint8_t* frame, size_t length) {
-    auto buffer = buffers_.acquireFree(0);
-    if (!buffer || length != gba_protocol::network::FRAME_SIZE) {
-        return;
-    }
-
-    std::copy_n(frame, length, buffer->data);
-    buffers_.publishReady(buffer->index);
 }
 
 } // namespace task

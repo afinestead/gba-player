@@ -6,7 +6,10 @@
 namespace gba_protocol {
 namespace network {
 
-static constexpr std::size_t FRAME_SIZE = 32 * 1024;
+static constexpr size_t FRAME_SIZE = 32 * 1024;
+static constexpr size_t MAX_VIDEO_PACKET_CHUNK_SIZE = 1400;
+static constexpr size_t VIDEO_FRAME_PACKET_COUNT =
+    (FRAME_SIZE + MAX_VIDEO_PACKET_CHUNK_SIZE - 1) / MAX_VIDEO_PACKET_CHUNK_SIZE;
 
 enum class PacketType : uint8_t {
     NONE = 0x00,

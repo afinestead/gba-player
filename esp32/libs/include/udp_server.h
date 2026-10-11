@@ -1,6 +1,6 @@
 #pragma once
 
-#include <array>
+#include <bitset>
 #include <cstddef>
 #include <cstdint>
 
@@ -10,19 +10,14 @@ namespace libs::network {
 
 class UdpServer {
 public:
-    using FrameHandler = void (*)(void*, const uint8_t*, size_t);
-
-    UdpServer(FrameHandler frame_handler, void* context);
-
-    void receivePacket(const uint8_t* packet, size_t length);
+    bool receivePacket(const uint8_t* packet, size_t length, uint8_t* frame);
 
 private:
     static constexpr size_t FRAME_SIZE = gba_protocol::network::FRAME_SIZE;
 
-    std::array<uint8_t, FRAME_SIZE> frame_{};
-    std::array<uint8_t, (FRAME_SIZE + 7) / 8> received_packets_{};
-    FrameHandler frame_handler_;
-    void* context_;
+    static constexpr size_t PACKET_COUNT = gba_protocol::network::VIDEO_FRAME_PACKET_COUNT;
+
+    std::bitset<PACKET_COUNT> received_packets_{};
     uint32_t frame_id_ = 0;
     uint16_t packet_count_ = 0;
     uint16_t received_count_ = 0;
