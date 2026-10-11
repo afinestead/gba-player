@@ -45,6 +45,15 @@ void testAssemblesOutOfOrderAndIgnoresDuplicates() {
     for (size_t i = gba_protocol::network::MAX_VIDEO_PACKET_CHUNK_SIZE; i < frame.size(); ++i) {
         assert(frame[i] == 0xB2);
     }
+
+    const auto& stats = server.stats();
+    assert(stats.packets_received == gba_protocol::network::VIDEO_FRAME_PACKET_COUNT + 1);
+    assert(stats.packets_rejected == 0);
+    assert(stats.duplicate_packets == 1);
+    assert(stats.completed_frames == 1);
+    assert(stats.dropped_frames == 0);
+    const auto stats_message = server.printStats();
+    assert(std::strcmp(stats_message.s, "udp stats rx:25 rej:0 dup:1 done:1 drop:0") == 0);
 }
 
 void testNewFrameReplacesIncompleteFrame() {
@@ -69,6 +78,10 @@ void testNewFrameReplacesIncompleteFrame() {
     for (size_t i = gba_protocol::network::MAX_VIDEO_PACKET_CHUNK_SIZE; i < frame.size(); ++i) {
         assert(frame[i] == 0xB2);
     }
+
+    const auto& stats = server.stats();
+    assert(stats.completed_frames == 1);
+    assert(stats.dropped_frames == 1);
 }
 
 void testRejectsShortAndInvalidPackets() {
@@ -96,6 +109,13 @@ void testRejectsShortAndInvalidPackets() {
         sizeof(oversized_chunk_header)
     );
     assert(!server.receivePacket(oversized_chunk_packet, sizeof(oversized_chunk_packet), frame.data()));
+
+    const auto& stats = server.stats();
+    assert(stats.packets_received == 3);
+    assert(stats.packets_rejected == 3);
+    assert(stats.duplicate_packets == 0);
+    assert(stats.completed_frames == 0);
+    assert(stats.dropped_frames == 0);
 }
 
 }

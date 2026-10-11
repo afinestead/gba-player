@@ -1,7 +1,13 @@
 #include "network_task.h"
+#include <cerrno>
 #include <sys/socket.h>
+#include <unistd.h>
 
 namespace task {
+
+namespace {
+constexpr char TAG[] = "NetworkTask";
+}
 
 FrameBuffer NetworkTask::buffers_{};
 
@@ -13,16 +19,19 @@ NetworkTask* NetworkTask::handle() {
     return network_task::handle;
 }
 
+libs::logging::Message NetworkTask::printStats() const {
+    return server_.printStats();
+}
+
 void NetworkTask::start() {
     network_task::handle = this;
 
     int sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-
     sockaddr_in addr{};
     addr.sin_family = AF_INET;
     addr.sin_port = htons(5000);
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    bind(sock, (sockaddr*)&addr, sizeof(addr));
+    bind(sock, reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
 
     sockaddr_in source{};
     socklen_t source_len = sizeof(source);

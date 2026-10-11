@@ -1,7 +1,6 @@
 #pragma once
 
 #include "task.h"
-#include "mailbox.h"
 
 namespace task {
 
@@ -17,8 +16,6 @@ public:
 
 protected:
     void start() override;
-private:
-    libs::Mailbox<Message, 10> mailbox_;
 };
 
 } // namespace task

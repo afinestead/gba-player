@@ -151,6 +151,7 @@ void WifiTask::start() {
 
     notify(static_cast<uint32_t>(Event::START_SCAN));
 
+    State last_logged_state = state_;
     while (true) {
         uint32_t event = wait(10000);
 
@@ -179,19 +180,22 @@ void WifiTask::start() {
             state_ = State::DISCONNECTED;
         }
 
-        switch (state_) {
-            case State::DISCONNECTED:
-                SerialTask::handle()->enqueueMessage({"DISCONNECTED"});
-                break;
-            case State::SCANNING:
-                SerialTask::handle()->enqueueMessage({"SCANNING"});
-                break;
-            case State::CONNECTED:
-                SerialTask::handle()->enqueueMessage({"CONNECTED"});
-                break;
-            default:
-                SerialTask::handle()->enqueueMessage({"UNKNOWN"});
-                break;
+        if (state_ != last_logged_state) {
+            switch (state_) {
+                case State::DISCONNECTED:
+                    SerialTask::handle()->enqueueMessage({"DISCONNECTED"});
+                    break;
+                case State::SCANNING:
+                    SerialTask::handle()->enqueueMessage({"SCANNING"});
+                    break;
+                case State::CONNECTED:
+                    SerialTask::handle()->enqueueMessage({"CONNECTED"});
+                    break;
+                default:
+                    SerialTask::handle()->enqueueMessage({"UNKNOWN"});
+                    break;
+            }
+            last_logged_state = state_;
         }
     }
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 namespace helpers {
 
 // Source - https://stackoverflow.com/a/12386915
@@ -8,7 +10,7 @@ namespace helpers {
 
 // Yet, another good itoa implementation
 // returns: the length of the number string
-int itoa(int value, char *sp, int radix = 10)
+inline int itoa(int value, char *sp, int radix = 10)
 {
     char tmp[16];// be careful with the length of the buffer
     char *tp = tmp;
@@ -41,6 +43,25 @@ int itoa(int value, char *sp, int radix = 10)
 
     while (tp > tmp)
         *sp++ = *--tp;
+
+    return len;
+}
+
+inline int itoa(uint64_t value, char *sp, int radix = 10)
+{
+    char tmp[65];
+    char *tp = tmp;
+
+    do {
+        const auto digit = value % static_cast<uint64_t>(radix);
+        value /= static_cast<uint64_t>(radix);
+        *tp++ = digit < 10 ? static_cast<char>(digit + '0') : static_cast<char>(digit + 'a' - 10);
+    } while (value);
+
+    const int len = static_cast<int>(tp - tmp);
+    while (tp > tmp) {
+        *sp++ = *--tp;
+    }
 
     return len;
 }

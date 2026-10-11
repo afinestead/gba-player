@@ -17,11 +17,10 @@ bool SerialTask::enqueueMessage(const Message& msg) {
 
 void SerialTask::start() {
     serial_task::handle = this;
-    
+
     Message recvd;
     while (true) {
-        bool ok = mailbox_.get(&recvd, 1000);
-        if (ok) {
+        if (mailbox_.get(&recvd)) {
             ESP_LOGI("SerialTask", "%s", recvd.s);
         }
     }
