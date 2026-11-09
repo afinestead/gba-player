@@ -28,7 +28,7 @@ void SpiTask::start() {
     bus_config.sclk_io_num = 18;
     bus_config.quadwp_io_num = -1;
     bus_config.quadhd_io_num = -1;
-    bus_config.max_transfer_sz = gba_protocol::network::FRAME_SIZE;
+    bus_config.max_transfer_sz = libs::network::FRAME_SIZE;
 
     spi_device_interface_config_t device_config;
     device_config.command_bits = 0;

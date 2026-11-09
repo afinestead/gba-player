@@ -3,14 +3,12 @@
 #include <algorithm>
 #include <cstring>
 
-#include "protocol.h"
-
 namespace libs::network {
 
 bool UdpServer::receivePacket(const uint8_t* packet, size_t length, uint8_t* frame) {
-    using gba_protocol::network::PacketHeader;
-    using gba_protocol::network::PacketType;
-    using gba_protocol::network::VideoPacketHeader;
+    using libs::network::PacketHeader;
+    using libs::network::PacketType;
+    using libs::network::VideoPacketHeader;
 
     ++stats_.packets_received;
     const auto reject_packet = [this]() {
@@ -45,9 +43,9 @@ bool UdpServer::receivePacket(const uint8_t* packet, size_t length, uint8_t* fra
     }
 
     const size_t payload_length = length - sizeof(PacketHeader) - sizeof(VideoPacketHeader);
-    const size_t offset = video_header.packet_index * gba_protocol::network::MAX_VIDEO_PACKET_CHUNK_SIZE;
+    const size_t offset = video_header.packet_index * MAX_VIDEO_PACKET_CHUNK_SIZE;
     const size_t expected_length = std::min(
-        gba_protocol::network::MAX_VIDEO_PACKET_CHUNK_SIZE,
+        MAX_VIDEO_PACKET_CHUNK_SIZE,
         FRAME_SIZE - offset
     );
     if (payload_length != expected_length) {

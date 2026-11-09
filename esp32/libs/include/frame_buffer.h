@@ -1,10 +1,10 @@
 #pragma once
 
 #include "double_buffer.h"
-#include "protocol.h"
+#include "udp_server.h"
 
 namespace libs::frame_buffer {
 
-using FrameBuffer = DoubleBuffer<uint8_t, gba_protocol::network::FRAME_SIZE>;
+using FrameBuffer = DoubleBuffer<uint8_t, libs::network::FRAME_SIZE>;
 
 };

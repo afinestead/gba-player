@@ -5,9 +5,28 @@
 #include <cstdint>
 
 #include "logging.h"
-#include "protocol.h"
 
 namespace libs::network {
+
+static constexpr size_t FRAME_SIZE = 32 * 1024;
+static constexpr size_t MAX_VIDEO_PACKET_CHUNK_SIZE = 1400;
+static constexpr size_t VIDEO_FRAME_PACKET_COUNT =
+    (FRAME_SIZE + MAX_VIDEO_PACKET_CHUNK_SIZE - 1) / MAX_VIDEO_PACKET_CHUNK_SIZE;
+
+enum class PacketType : uint8_t {
+    NONE = 0x00,
+    VIDEO_FRAME,
+};
+
+struct PacketHeader {
+    PacketType packet_type;
+};
+
+struct VideoPacketHeader {
+    uint32_t frame_id;
+    uint16_t packet_index;
+    uint16_t packet_count;
+};
 
 class UdpServer {
 public:
@@ -24,9 +43,7 @@ public:
     libs::logging::Message printStats() const;
 
 private:
-    static constexpr size_t FRAME_SIZE = gba_protocol::network::FRAME_SIZE;
-
-    static constexpr size_t PACKET_COUNT = gba_protocol::network::VIDEO_FRAME_PACKET_COUNT;
+    static constexpr size_t PACKET_COUNT = VIDEO_FRAME_PACKET_COUNT;
 
     std::bitset<PACKET_COUNT> received_packets_{};
     uint32_t frame_id_ = 0;
