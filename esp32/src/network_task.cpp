@@ -1,4 +1,5 @@
 #include "network_task.h"
+#include "esp_attr.h"
 #include <cerrno>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -9,7 +10,7 @@ namespace {
 constexpr char TAG[] = "NetworkTask";
 }
 
-FrameBuffer NetworkTask::buffers_{};
+DMA_ATTR FrameBuffer NetworkTask::buffers_{};
 
 namespace network_task {
 static NetworkTask* handle;

@@ -39,6 +39,14 @@ public:
         xTaskNotify(task_handle_, bits, eSetBits);
     }
 
+    void notifyFromISR(uint32_t bits) {
+        BaseType_t pxHigherPriorityTaskWoken = pdFALSE;
+        xTaskNotifyFromISR(task_handle_, bits, eSetBits, &pxHigherPriorityTaskWoken);
+        if (pxHigherPriorityTaskWoken) {
+            portYIELD_FROM_ISR();
+        }
+    }
+
     uint32_t wait(uint32_t duration = 0xffffffff) {
         uint32_t event;
         xTaskNotifyWait(0, 0xffffffff, &event, duration / portTICK_PERIOD_MS);

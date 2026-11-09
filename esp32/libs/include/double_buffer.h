@@ -22,6 +22,10 @@ public:
         free_buf_.put(BufferIndex::B);
     }
 
+    static constexpr size_t size() {
+        return Size * sizeof(T);
+    }
+
     std::optional<Buffer> acquireFree(uint32_t duration = 0xffffffff) {
         return getBuffer(free_buf_, duration);
     }
@@ -38,7 +42,7 @@ public:
         return ready_buf_.put(index);
     }
 private:
-    T buffers_[2][Size];
+    alignas(uint32_t) T buffers_[2][Size];
 
     std::optional<Buffer> getBuffer(Mailbox<BufferIndex, 2>& mailbox, uint32_t duration) {
         BufferIndex index;
