@@ -48,12 +48,22 @@ void NetworkTask::start() {
             &source_len
         );
         if (len > 0) {
+            PacketType completed_type = PacketType::NONE;
+            size_t completed_length = 0;
             const bool frame_complete = server_.receivePacket(
                 recv_buffer_,
                 static_cast<size_t>(len),
-                write_buffer->data
+                write_buffer->payload(),
+                FrameBuffer::payloadSize(),
+                completed_type,
+                completed_length
             );
             if (frame_complete) {
+                *write_buffer->header() = ProtocolHeader{
+                    .opcode = completed_type,
+                    .sequence = 0,
+                    .length = static_cast<uint16_t>(completed_length)
+                };
                 buffers_.publishReady(write_buffer->index);
                 write_buffer = buffers_.acquireFree();
             }

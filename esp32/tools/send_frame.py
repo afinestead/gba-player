@@ -10,11 +10,10 @@ from typing import Iterator
 
 
 FRAME_SIZE = 32 * 1024
-MAX_VIDEO_PACKET_CHUNK_SIZE = 1400
-VIDEO_FRAME_PACKET_COUNT = (FRAME_SIZE + MAX_VIDEO_PACKET_CHUNK_SIZE - 1) // MAX_VIDEO_PACKET_CHUNK_SIZE
+MAX_PACKET_CHUNK_SIZE = 1400
+FRAME_PACKET_COUNT = (FRAME_SIZE + MAX_PACKET_CHUNK_SIZE - 1) // MAX_PACKET_CHUNK_SIZE
 PACKET_TYPE_VIDEO_FRAME = 1
-PACKET_HEADER = struct.Struct("<B")
-VIDEO_FRAME_HEADER = struct.Struct("<IHH")
+PACKET_HEADER = struct.Struct("<BIHH")
 
 
 def make_packets(frame: bytes, frame_id: int) -> Iterator[bytes]:
@@ -23,16 +22,16 @@ def make_packets(frame: bytes, frame_id: int) -> Iterator[bytes]:
     if not 0 <= frame_id <= 0xFFFFFFFF:
         raise ValueError("frame ID must fit in an unsigned 32-bit integer")
 
-    packet_type = PACKET_HEADER.pack(PACKET_TYPE_VIDEO_FRAME)
-    for packet_index in range(VIDEO_FRAME_PACKET_COUNT):
-        offset = packet_index * MAX_VIDEO_PACKET_CHUNK_SIZE
-        payload = frame[offset:offset + MAX_VIDEO_PACKET_CHUNK_SIZE]
-        video_header = VIDEO_FRAME_HEADER.pack(
+    for packet_index in range(FRAME_PACKET_COUNT):
+        offset = packet_index * MAX_PACKET_CHUNK_SIZE
+        payload = frame[offset:offset + MAX_PACKET_CHUNK_SIZE]
+        header = PACKET_HEADER.pack(
+            PACKET_TYPE_VIDEO_FRAME,
             frame_id,
             packet_index,
-            VIDEO_FRAME_PACKET_COUNT,
+            FRAME_PACKET_COUNT,
         )
-        yield packet_type + video_header + payload
+        yield header + payload
 
 
 def make_test_frame() -> bytes:
@@ -104,7 +103,7 @@ def main() -> int:
     final_frame_id = args.frame_id + args.nframes - 1
     print(
         f"Sent {args.nframes} frame(s) from {source} "
-        f"(IDs {args.frame_id}-{final_frame_id}, {VIDEO_FRAME_PACKET_COUNT} packets each) "
+        f"(IDs {args.frame_id}-{final_frame_id}, {FRAME_PACKET_COUNT} packets each) "
         f"to {args.host}:{args.port}"
     )
     if packet_interval_ns:

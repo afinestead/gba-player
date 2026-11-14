@@ -15,8 +15,7 @@ public:
     );
 
     spi_device_handle_t device() const;
-    bool send(const uint8_t* data, size_t length, uint32_t timeout_ms = 0);
-    bool recv(uint8_t* data, size_t length, uint32_t timeout_ms = 0);
+    bool sendBlocking(const uint8_t* data, size_t length, uint32_t timeout_ms = 0);
 private:
     spi_host_device_t host_;
     spi_device_handle_t device_;

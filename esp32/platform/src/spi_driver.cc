@@ -12,7 +12,7 @@ void SpiDriver::init(
     spi_bus_add_device(host_, &device_config, &device_);
 }
 
-bool SpiDriver::send(const uint8_t* data, size_t length, uint32_t timeout_ms) {
+bool SpiDriver::sendBlocking(const uint8_t* data, size_t length, uint32_t timeout_ms) {
     spi_transaction_t trans{};
     trans.length = length * 8;
     trans.tx_buffer = data;

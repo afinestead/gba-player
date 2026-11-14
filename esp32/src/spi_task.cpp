@@ -1,5 +1,4 @@
 #include "spi_task.h"
-
 #include "network_task.h"
 
 namespace task {
@@ -7,7 +6,6 @@ namespace task {
 namespace spi_task {
 static SpiTask* handle;
 }
-
 
 static void IRAM_ATTR transmit_complete_callback(spi_transaction_t* trans) {
     SpiTask::handle()->notifyFromISR(
@@ -28,7 +26,7 @@ void SpiTask::start() {
     bus_config.sclk_io_num = 18;
     bus_config.quadwp_io_num = -1;
     bus_config.quadhd_io_num = -1;
-    bus_config.max_transfer_sz = libs::network::FRAME_SIZE;
+    bus_config.max_transfer_sz = NetworkTask::buffers_.size();
 
     spi_device_interface_config_t device_config;
     device_config.command_bits = 0;
@@ -42,14 +40,17 @@ void SpiTask::start() {
     spi_driver_.init(bus_config, device_config);
 
 	while (true) {
-		auto frame = NetworkTask::buffers_.acquireReady();
-		if (frame) {
-            spi_driver_.send(frame->data, NetworkTask::buffers_.size());
-            const auto transmit_complete = static_cast<uint32_t>(Event::TRANSMIT_COMPLETE);
-            while ((wait(10) & transmit_complete) == 0);
-            NetworkTask::buffers_.publishFree(frame->index);
+        auto frame = NetworkTask::buffers_.acquireReady();
+        if (!frame) {
+            continue;
         }
+        spi_driver_.sendBlocking(
+            reinterpret_cast<const uint8_t*>(frame->header()),
+            sizeof(ProtocolHeader) + frame->header()->length
+        );
+        NetworkTask::buffers_.publishFree(frame->index);
 	}
 }
+
 
 }

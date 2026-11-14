@@ -8,5 +8,5 @@ add_executable(udp_server_test
     ../src/udp_server.cpp
 )
 target_compile_features(udp_server_test PRIVATE cxx_std_17)
-target_include_directories(udp_server_test PRIVATE ../include)
+target_include_directories(udp_server_test PRIVATE ../include ../../..)
 add_test(NAME udp_server_test COMMAND udp_server_test)

@@ -5,11 +5,10 @@
 #include "libs/include/frame_buffer.h"
 #include "libs/include/udp_server.h"
 
-using libs::frame_buffer::FrameBuffer;
-
 namespace task {
 
 using NetworkTaskBase = Task<4096>;
+using FrameBuffer = libs::FrameBuffer<uint8_t, libs::network::FRAME_SIZE>;
 
 class NetworkTask : public NetworkTaskBase {
 public:

@@ -11,7 +11,7 @@ using SpiTaskBase = Task<4096>;
 class SpiTask : public SpiTaskBase {
 public:
     SpiTask()
-        : SpiTaskBase("SpiTask", Priority::SPI), spi_driver_(SPI1_HOST)
+        : SpiTaskBase("SpiTask", Priority::SPI), spi_driver_(SPI2_HOST)
     {}
 
     static SpiTask* handle();
