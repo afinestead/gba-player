@@ -7,48 +7,57 @@ namespace spi_task {
 static SpiTask* handle;
 }
 
-static void IRAM_ATTR transmit_complete_callback(spi_transaction_t* trans) {
-    SpiTask::handle()->notifyFromISR(
-        static_cast<uint32_t>(SpiTask::Event::TRANSMIT_COMPLETE)
-    );
-}
+// static void IRAM_ATTR transmit_complete_callback(spi_transaction_t* trans) {
+//     SpiTask::handle()->notifyFromISR(
+//         static_cast<uint32_t>(SpiTask::Event::TRANSMIT_COMPLETE)
+//     );
+// }
 
 SpiTask* SpiTask::handle() {
 	return spi_task::handle;
 }
 
+libs::logging::Message SpiTask::printStats() const {
+    libs::logging::Message message{};
+    message.appendText("spi stats tx:");
+    message.appendCount(frames_sent_);
+    return message;
+}
+
 void SpiTask::start() {
 	spi_task::handle = this;
 
-    spi_bus_config_t bus_config;
-    bus_config.mosi_io_num = 23;
-    bus_config.miso_io_num = 19;
-    bus_config.sclk_io_num = 18;
-    bus_config.quadwp_io_num = -1;
-    bus_config.quadhd_io_num = -1;
-    bus_config.max_transfer_sz = NetworkTask::buffers_.size();
+    spi_bus_config_t bus_cfg {};
+    bus_cfg.mosi_io_num = 11;
+    bus_cfg.miso_io_num = 13;
+    bus_cfg.sclk_io_num = 12;
+    bus_cfg.quadwp_io_num = -1;
+    bus_cfg.quadhd_io_num = -1;
+    bus_cfg.max_transfer_sz = NetworkTask::buffers.size();
 
-    spi_device_interface_config_t device_config;
-    device_config.command_bits = 0;
-    device_config.address_bits = 0;
-    device_config.dummy_bits = 0;
-    device_config.mode = 0;
-    device_config.spics_io_num = 5;
-    device_config.queue_size = 1;
-    device_config.post_cb = transmit_complete_callback;
+    spi_device_interface_config_t dev_cfg {};
+    dev_cfg.clock_source = SPI_CLK_SRC_DEFAULT;
+    dev_cfg.clock_speed_hz = SPI_MASTER_FREQ_40M;
+    dev_cfg.command_bits = 0;
+    dev_cfg.address_bits = 0;
+    dev_cfg.dummy_bits = 0;
+    dev_cfg.mode = 0;
+    dev_cfg.spics_io_num = 10;
+    dev_cfg.queue_size = 1;
+    dev_cfg.post_cb = nullptr;
 
-    spi_driver_.init(bus_config, device_config);
+    spi_driver_.init(bus_cfg, dev_cfg);
 
 	while (true) {
-        auto frame = NetworkTask::buffers_.acquireReady();
-        if (!frame) {
-            continue;
+        if (auto frame = NetworkTask::buffers.acquireReady()) {
+            if (spi_driver_.sendBlocking(
+                reinterpret_cast<const uint8_t*>(frame->header()),
+                frame->len()
+            )) {
+                ++frames_sent_;
+            }
+            NetworkTask::buffers.publishFree(frame->index);
         }
-        spi_driver_.sendBlocking(
-            reinterpret_cast<const uint8_t*>(frame->header()),
-            sizeof(ProtocolHeader) + frame->header()->length
-        );
-        NetworkTask::buffers_.publishFree(frame->index);
 	}
 }
 

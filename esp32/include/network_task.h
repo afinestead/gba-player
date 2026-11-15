@@ -19,7 +19,7 @@ public:
     static NetworkTask* handle();
     libs::logging::Message printStats() const;
 
-    static FrameBuffer buffers_;
+    static FrameBuffer buffers;
 protected:
     void start() override;
 private:

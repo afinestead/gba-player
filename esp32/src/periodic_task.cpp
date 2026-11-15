@@ -2,17 +2,20 @@
 
 #include "network_task.h"
 #include "serial_task.h"
+#include "spi_task.h"
 
 namespace task {
 
 void PeriodicTask::start() {
     NetworkTask* network_task = NetworkTask::handle();
+    SpiTask* spi_task = SpiTask::handle();
     SerialTask* serial_task = SerialTask::handle();
 
     while (true) {
         delay(5000);
         
         serial_task->enqueueMessage(network_task->printStats());
+        serial_task->enqueueMessage(spi_task->printStats());
     }
 }
 

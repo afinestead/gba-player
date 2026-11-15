@@ -1,6 +1,7 @@
 #include "network_task.h"
 #include "esp_attr.h"
 #include <cerrno>
+#include <optional>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -10,7 +11,7 @@ namespace {
 constexpr char TAG[] = "NetworkTask";
 }
 
-DMA_ATTR FrameBuffer NetworkTask::buffers_{};
+DMA_ATTR FrameBuffer NetworkTask::buffers{};
 
 namespace network_task {
 static NetworkTask* handle;
@@ -36,7 +37,7 @@ void NetworkTask::start() {
 
     sockaddr_in source{};
     socklen_t source_len = sizeof(source);
-    auto write_buffer = buffers_.acquireFree();
+    std::optional<FrameBuffer::Buffer> write_buffer;
 
     while (true) {
         int len = recvfrom(
@@ -47,6 +48,10 @@ void NetworkTask::start() {
             reinterpret_cast<sockaddr*>(&source),
             &source_len
         );
+        if (!write_buffer.has_value()) {
+            write_buffer = buffers.acquireFree(0);
+        }
+
         if (len > 0) {
             PacketType completed_type = PacketType::NONE;
             size_t completed_length = 0;
@@ -64,8 +69,8 @@ void NetworkTask::start() {
                     .sequence = 0,
                     .length = static_cast<uint16_t>(completed_length)
                 };
-                buffers_.publishReady(write_buffer->index);
-                write_buffer = buffers_.acquireFree();
+                buffers.publishReady(write_buffer->index);
+                write_buffer.reset();
             }
         }
     }

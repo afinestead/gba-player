@@ -25,6 +25,10 @@ public:
             );
         }
 
+        size_t len() {
+            return static_cast<size_t>(header()->length) + sizeof(ProtocolHeader);
+        }
+
         ProtocolHeader* header() {
             return reinterpret_cast<ProtocolHeader*>(data_);
         }
