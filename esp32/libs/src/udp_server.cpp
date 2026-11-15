@@ -4,6 +4,15 @@
 
 namespace libs::network {
 
+namespace {
+
+bool isNewerFrameId(uint32_t candidate, uint32_t current) {
+    const uint32_t distance = candidate - current;
+    return distance != 0 && distance < 0x80000000u;
+}
+
+}
+
 bool UdpServer::receivePacket(
     const uint8_t* packet,
     size_t length,
@@ -52,18 +61,23 @@ bool UdpServer::receivePacket(
     }
     const size_t packet_frame_length = offset + payload_length;
 
-    if (!active_ || packet_header.frame_id != frame_id_ || packet_type != packet_type_) {
-        if (active_) {
-            ++stats_.dropped_frames;
+    if (active_ && packet_header.frame_id != frame_id_) {
+        if (!isNewerFrameId(packet_header.frame_id, frame_id_)) {
+            return reject_packet();
         }
+        ++stats_.dropped_frames;
         reset();
+    } else if (active_ && packet_type != packet_type_) {
+        return reject_packet();
+    }
+
+    if (!active_) {
         active_ = true;
         frame_id_ = packet_header.frame_id;
         packet_count_ = packet_header.packet_count;
         packet_type_ = packet_type;
         frame_length_ = 0;
     } else if (packet_header.packet_count != packet_count_) {
-        reset();
         return reject_packet();
     }
 

@@ -18,7 +18,8 @@ public:
     {}
 
     static SpiTask* handle();
-    libs::logging::Message printStats() const;
+    uint64_t framesSent() const { return frames_sent_; }
+    libs::logging::Message printStats(uint64_t frames_sent_delta) const;
 
     enum class Event : uint32_t {
         TRANSMIT_COMPLETE = 0x01,

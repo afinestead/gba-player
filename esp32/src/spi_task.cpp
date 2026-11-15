@@ -17,10 +17,10 @@ SpiTask* SpiTask::handle() {
 	return spi_task::handle;
 }
 
-libs::logging::Message SpiTask::printStats() const {
+libs::logging::Message SpiTask::printStats(uint64_t frames_sent_delta) const {
     libs::logging::Message message{};
-    message.appendText("spi stats tx:");
-    message.appendCount(frames_sent_);
+    message.appendText("spi stats tx/s:");
+    message.appendCount(frames_sent_delta);
     return message;
 }
 

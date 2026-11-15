@@ -29,17 +29,21 @@ void NetworkTask::start() {
     network_task::handle = this;
 
     int sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+    uint32_t rcvbuf = 64 * 1024;
+    setsockopt(sock, SOL_SOCKET, SO_RCVBUF, &rcvbuf, sizeof(rcvbuf));
+
     sockaddr_in addr{};
     addr.sin_family = AF_INET;
     addr.sin_port = htons(5000);
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
     bind(sock, reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
 
-    sockaddr_in source{};
-    socklen_t source_len = sizeof(source);
     std::optional<FrameBuffer::Buffer> write_buffer;
 
     while (true) {
+        sockaddr_in source{};
+        socklen_t source_len = sizeof(source);
         int len = recvfrom(
             sock,
             recv_buffer_,
@@ -52,7 +56,7 @@ void NetworkTask::start() {
             write_buffer = buffers.acquireFree(0);
         }
 
-        if (len > 0) {
+        if (len > 0 && write_buffer.has_value()) {
             PacketType completed_type = PacketType::NONE;
             size_t completed_length = 0;
             const bool frame_complete = server_.receivePacket(
